@@ -1,5 +1,7 @@
 # Horus - Personal AI Assistant
 
+![alt text](./doc/intro.png)
+
 Horus is a command-line based personal AI assistant powered by Google's Gemini models. It provides a simple interface to interact with the Gemini language model, allowing you to have conversations, and manage your setup.
 
 ## Features
