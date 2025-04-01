@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import textwrap
 from google import genai
 from typing import Callable
 from dotenv import load_dotenv
@@ -10,6 +11,7 @@ from chat_util import validate_api_key
 
 load_dotenv()
 MAIN_COMMAND = "horus"
+
 DATA_FILE = os.getenv("DATA_FILE")
 
 def welcome() -> None:
@@ -126,7 +128,8 @@ def chat():
             break
         
         response = chat.send_message(prompt)
-        print(f"{BLUE}> HORUS: {response.text}")
+        formatted_response = textwrap.fill(response.text, width=80)
+        print(f"{BLUE}> HORUS: {formatted_response}")
 
     clear()
 
