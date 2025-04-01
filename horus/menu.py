@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+from google import genai
 from typing import Callable
 from dotenv import load_dotenv
 from colors import BOLD,BLUE,YELLOW,RESET,RED
@@ -9,6 +10,7 @@ from chat_util import validate_api_key
 
 load_dotenv()
 MAIN_COMMAND = "horus"
+DATA_FILE = os.getenv("DATA_FILE")
 
 def welcome() -> None:
     print(f"""{BOLD}{YELLOW}
@@ -64,7 +66,6 @@ def ploop(message: str, err_mssg: str, validation_fn: Callable[[str],bool])-> st
             print(f"{BOLD}{RED}> {err_mssg}{RESET}")
 
 def setup():
-    DATA_FILE = os.getenv("DATA_FILE")
     config: dict[str,str] = {}
     name: str
     api_key: str
@@ -85,7 +86,7 @@ def setup():
         name: str = ploop(f"> Name: ",f"Please enter name correctly!",lambda name: len(name.strip()) != 0 and name.isalnum())
         api_key: str = ploop(f"> API-KEY: ",f"Invalid API-KEY!",lambda api_key: len(api_key.strip()) != 0 and validate_api_key(api_key))
 
-        config = {"name": name, "api_key": api_key}
+        config = {"name": name.strip(), "api_key": api_key.strip()}
         
         with open(DATA_FILE,"w") as file:
             json.dump(config,file,indent=4)
@@ -96,7 +97,38 @@ def setup():
         
             
 def chat():
-    print("Under Development")
+    if not os.path.exists(DATA_FILE): 
+        print(f"{RED}> Complete setup! 'horus setup'{RESET}")
+        return
+    else:
+        with open(DATA_FILE,"r") as file:
+            config = json.load(file)
+        name = config.get("name")
+        api_key = config.get("api_key")
+        
+    print(f"""{BLUE}
+  ██████╗██╗  ██╗ █████╗ ████████╗
+  ██╔════╝██║  ██║██╔══██╗╚══██╔══╝
+  ██║     ███████║███████║   ██║   
+  ██║     ██╔══██║██╔══██║   ██║   
+  ╚██████╗██║  ██║██║  ██║   ██║   
+   ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝                       
+          {RESET}""")
+    
+    print(f"To end the chat -> $END$")
+    
+    client = genai.Client(api_key = api_key)
+    chat = client.chats.create(model="gemini-2.0-flash")
+    
+    while True:
+        prompt = input(f"{YELLOW}> {name}: {RESET}")
+        if prompt == "$END$":
+            break
+        
+        response = chat.send_message(prompt)
+        print(f"{BLUE}> HORUS: {response.text}")
+
+    clear()
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
