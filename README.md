@@ -22,8 +22,8 @@ Horus is a command-line based personal AI assistant powered by Google's Gemini m
 1.  **Clone the repository:**
 
     ```bash
-    git clone <your-repository-url>
-    cd <your-repository-directory>
+    git clone https://github.com/pkalsi97/Horus.git
+    cd Horus
     ```
 
 2.  **Install Poetry (if you don't have it):**
@@ -46,6 +46,14 @@ Horus is a command-line based personal AI assistant powered by Google's Gemini m
         ```
         DATA_FILE=<your_data_file_path>
         ```
+5.  **Config.json:**
+       ```
+       {
+           "name":"Your Name",
+           "api_key":"API KEY"
+       }
+       ```
+
 
 ## Usage
 
